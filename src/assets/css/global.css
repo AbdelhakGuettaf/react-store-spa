@@ -1,0 +1,9 @@
+.active {
+  color: #5ece7b;
+  border-bottom: #5ece7b 2px solid;
+  font-weight: 600;
+}
+a {
+  text-decoration: none;
+  color: #1d1f22;
+}
