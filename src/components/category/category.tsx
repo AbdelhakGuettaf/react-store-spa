@@ -33,7 +33,7 @@ const Title = styled.h1`
   line-height: 67px;
   letter-spacing: 0px;
   text-align: left;
-  margin: 50px 100px;
+  margin: 50px 7%;
 `;
 const MainWrapper = styled.div`
   width: 100%;

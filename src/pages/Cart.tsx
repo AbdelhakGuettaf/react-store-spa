@@ -1,7 +1,8 @@
+import { Dispatch } from "@reduxjs/toolkit";
 import React from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
-import { cartItemType } from "../components/cart/cart.slice";
+import { cartItemType, clearCart } from "../components/cart/cart.slice";
 import CartItems from "../components/cart/cartItems";
 import { RootState } from "../store/store";
 
@@ -9,6 +10,7 @@ interface CartProps {
   items: cartItemType[];
   currency: string;
   symbol: string;
+  dispatch: Dispatch;
 }
 
 class Cart extends React.Component<CartProps> {
@@ -58,12 +60,18 @@ class Cart extends React.Component<CartProps> {
               <tr>
                 <TDTotal>Total:</TDTotal>
                 <TDValue>
-                  {this.props.symbol + this.getTotalPrice().toFixed(2)}
+                  {this.props.symbol +
+                    (
+                      this.getTotalPrice() +
+                      this.getTotalPrice() * 0.21
+                    ).toFixed(2)}
                 </TDValue>
               </tr>
               <tr>
                 <td colSpan={2}>
-                  <Order>ORDER</Order>
+                  <Order onClick={() => this.props.dispatch(clearCart())}>
+                    ORDER
+                  </Order>
                 </td>
               </tr>
             </tbody>
@@ -95,7 +103,7 @@ const Title = styled.h1`
 const CartWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 0 100px;
+  padding: 0 7%;
 `;
 const Table = styled.table`
   min-width: 280px;
@@ -137,4 +145,5 @@ const Order = styled.button`
   letter-spacing: 0em;
   text-align: center;
   color: #ffffff;
+  cursor: pointer;
 `;

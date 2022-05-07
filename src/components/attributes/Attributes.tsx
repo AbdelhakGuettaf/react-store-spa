@@ -6,6 +6,7 @@ interface AtributesProps {
   attributes: [(AttributeSet | undefined)?];
   productID: string;
   cart?: number;
+  size: "s" | "lg";
 }
 
 class Attributes extends React.Component<AtributesProps> {
@@ -20,7 +21,7 @@ class Attributes extends React.Component<AtributesProps> {
                   cartId={this.props.cart}
                   attributes={attrib}
                   productID={this.props.productID}
-                  size="lg"
+                  size={this.props.size}
                   key={idx}
                 />
               )

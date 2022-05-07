@@ -7,6 +7,7 @@ import CartItem from "./cartItem";
 
 interface CartItemsProps {
   items: cartItemType[];
+  mini?: boolean;
 }
 
 class CartItems extends React.Component<CartItemsProps> {
@@ -14,7 +15,7 @@ class CartItems extends React.Component<CartItemsProps> {
     return (
       <ItemsWrapper>
         {this.props.items.map((item, key) => (
-          <CartItem item={item} key={key} />
+          <CartItem mini={this.props.mini} item={item} key={key} />
         ))}
       </ItemsWrapper>
     );

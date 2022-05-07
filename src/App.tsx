@@ -5,19 +5,25 @@ import { RootState } from "./store/store";
 import { Dispatch } from "@reduxjs/toolkit";
 import { CategoryType } from "./types/types";
 import { addCategories } from "./components/categories.slice";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import MainHeader from "./components/header/Header";
 import Categories from "./pages/Categories";
 import "./assets/css/fonts.css";
 import { addToCart } from "./components/cart/cart.slice";
 import Cart from "./pages/Cart";
-import Category from "./components/category/category";
 interface Props {
   dispatch: Dispatch;
   data: CategoryType[];
   currency: string;
 }
-class App extends React.Component<Props> {
+type State = {
+  loading: boolean;
+};
+class App extends React.Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = { loading: true };
+  }
   componentDidMount = async () => {
     client.setEndpoint("http://localhost:4000/");
     const query = new Query("categories", true).addField("name").addField(
@@ -59,7 +65,7 @@ class App extends React.Component<Props> {
     );
     this.props.dispatch(
       addToCart({
-        id: Date.now(),
+        id: Date.now() + 1,
         product: f[2].products[0],
         attribs: [
           {
@@ -74,11 +80,15 @@ class App extends React.Component<Props> {
         quantity: 2,
       })
     );
+    this.setState(() => ({ loading: false }));
   };
   render() {
     console.log("Render"); // Render Counter
     console.log("==============="); // Render Counter
-
+    if (this.state.loading)
+      return (
+        <h1 style={{ textAlign: "center", marginTop: "20%" }}>Loading...</h1>
+      );
     return (
       <>
         <MainHeader />
@@ -87,7 +97,7 @@ class App extends React.Component<Props> {
             path="/"
             element={
               this.props.data[0] ? (
-                <Category data={this.props.data[0]} />
+                <Navigate to={`/${this.props.data[0].name}`} replace />
               ) : (
                 <div>No Data</div>
               )

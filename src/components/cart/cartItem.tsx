@@ -5,36 +5,71 @@ import styled from "styled-components";
 import Attributes from "../attributes/Attributes";
 import Carousel from "../Carousel/Carousel";
 import Price from "../Price";
-import { cartItemType, decrementCount, incrementCount } from "./cart.slice";
+import {
+  cartItemType,
+  decrementCount,
+  incrementCount,
+  removeFromCart,
+} from "./cart.slice";
 
 interface CartItemProps {
   item: cartItemType;
+  mini?: boolean;
   dispatch: Dispatch;
 }
 
 class CartItem extends React.Component<CartItemProps> {
   render() {
     return (
-      <CartItemWrap>
-        <LeftVStack>
-          <Brand>{this.props.item.product.brand}</Brand>
-          <Name>{this.props.item.product.name}</Name>
-          <div style={{ padding: "0 5px" }}>
+      <CartItemWrap style={{ maxHeight: this.props.mini ? "auto" : "auto" }}>
+        <LeftVStack
+          style={{
+            gap: this.props.mini ? "4" : "15px",
+          }}
+        >
+          <Brand
+            style={{
+              fontSize: this.props.mini ? "16px" : "",
+              fontWeight: this.props.mini ? "300" : "",
+            }}
+          >
+            {this.props.item.product.brand}
+          </Brand>
+          <Name
+            style={{
+              fontSize: this.props.mini ? "16px" : "",
+              fontWeight: this.props.mini ? "300" : "",
+            }}
+          >
+            {this.props.item.product.name}
+          </Name>
+          <div>
             <Price
               price={this.props.item.product.prices}
-              size={24}
-              wieght="700"
+              size={this.props.mini ? 16 : 24}
+              wieght={this.props.mini ? "500" : "700"}
             />
           </div>
           <Attributes
+            size={this.props.mini ? "s" : "lg"}
             cart={this.props.item.id}
             productID={this.props.item.product.id}
             attributes={this.props.item.product.attributes}
           ></Attributes>
         </LeftVStack>
         <RightHStack>
-          <Quantity>
+          <Quantity
+            style={{
+              width: this.props.mini ? "24px" : "",
+              marginRight: this.props.mini ? "" : "24px",
+            }}
+          >
             <TopButton
+              style={{
+                fontSize: this.props.mini ? "16px" : "",
+                fontWeight: this.props.mini ? "300" : "",
+                lineHeight: this.props.mini ? "1px" : "",
+              }}
               onClick={() =>
                 this.props.dispatch(
                   incrementCount({ itemId: this.props.item.id })
@@ -43,19 +78,42 @@ class CartItem extends React.Component<CartItemProps> {
             >
               +
             </TopButton>
-            <Count>{this.props.item.quantity}</Count>
+            <Count
+              style={{
+                fontSize: this.props.mini ? "16px" : "",
+                fontWeight: this.props.mini ? "500" : "",
+              }}
+            >
+              {this.props.item.quantity}
+            </Count>
             <BotButton
-              onClick={() =>
-                this.props.item.quantity > 0 &&
+              style={{
+                fontSize: this.props.mini ? "16px" : "",
+                fontWeight: this.props.mini ? "300" : "",
+              }}
+              onClick={() => {
+                if (this.props.item.quantity === 1) {
+                  this.props.dispatch(
+                    removeFromCart({ itemId: this.props.item.id })
+                  );
+                  return;
+                }
                 this.props.dispatch(
                   decrementCount({ itemId: this.props.item.id })
-                )
-              }
+                );
+              }}
             >
               -
             </BotButton>
           </Quantity>
-          <Carousel imgs={this.props.item.product.gallery} />
+          {this.props.mini ? (
+            <Img
+              src={this.props.item.product.gallery[0]}
+              alt="Product Gallery"
+            />
+          ) : (
+            <Carousel imgs={this.props.item.product.gallery} />
+          )}
         </RightHStack>
       </CartItemWrap>
     );
@@ -67,7 +125,6 @@ export default connect()(CartItem);
 const CartItemWrap = styled.div`
   display: flex;
   width: 100%;
-  height: 300px;
   justify-content: space-between;
   flex-direction: row;
   border-top: #e5e5e5 1px solid;
@@ -76,7 +133,7 @@ const CartItemWrap = styled.div`
 const LeftVStack = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  min-width: 50%;
 `;
 const Brand = styled.div`
   font-family: Raleway;
@@ -101,9 +158,9 @@ const RightHStack = styled.div`
 `;
 const Quantity = styled.div`
   width: 45px;
-  margin-right: 24px;
   top: 0;
   bottom: 0;
+  padding: 5px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -149,5 +206,7 @@ const BotButton = styled.button`
 `;
 const Img = styled.img`
   display: block;
+  width: 80%;
+  height: auto;
   max-width: 230px;
 `;

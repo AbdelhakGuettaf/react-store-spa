@@ -1,15 +1,29 @@
 import React from "react";
+import { connect } from "react-redux";
+import { selectedAttributes } from "../components/attributes/Atrributes.slice";
+import ProductDescription from "../components/product/productDescription";
+import { RootState } from "../store/store";
+import { CategoryType } from "../types/types";
 
-class Index extends React.Component {
+interface PDPProps {
+  attributeState: selectedAttributes[];
+  categories: CategoryType[];
+}
+
+class ProductDescriptionPage extends React.Component<PDPProps> {
   render() {
-    return <p></p>;
-  }
-
-  componentDidMount() {
-    this.setState({
-      someKey: "otherValue",
-    });
+    return (
+      <ProductDescription
+        categories={this.props.categories}
+        attributeState={this.props.attributeState}
+      />
+    );
   }
 }
 
-export default Index;
+const mapStateToProps = (state: RootState) => ({
+  attributeState: state.Attributes,
+  categories: state.Categories,
+});
+
+export default connect(mapStateToProps)(ProductDescriptionPage);

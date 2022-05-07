@@ -8,9 +8,12 @@ type MyState = {
   currentImg: number;
 };
 class Carousel extends React.Component<CarouselProps, MyState> {
-  state: MyState = {
-    currentImg: 0,
-  };
+  constructor(props: CarouselProps) {
+    super(props);
+    this.state = {
+      currentImg: 0,
+    };
+  }
 
   next() {
     this.setState((state) => {
@@ -34,10 +37,12 @@ class Carousel extends React.Component<CarouselProps, MyState> {
       <>
         <Wrapper>
           <Img src={this.props.imgs[this.state.currentImg]} />
-          <Buttons>
-            <Previous onClick={() => this.previous()}>{"<"}</Previous>
-            <Next onClick={() => this.next()}>{">"}</Next>
-          </Buttons>
+          {this.props.imgs.length > 1 && (
+            <Buttons>
+              <Previous onClick={() => this.previous()}>{"<"}</Previous>
+              <Next onClick={() => this.next()}>{">"}</Next>
+            </Buttons>
+          )}
         </Wrapper>
       </>
     );
@@ -52,6 +57,7 @@ const Wrapper = styled.div`
   justify-content: center;
   height: 100%;
   width: 100%;
+  min-width: 100px;
 `;
 const Img = styled.img`
   display: block;
