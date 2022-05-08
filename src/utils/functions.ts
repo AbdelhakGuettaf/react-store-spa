@@ -1,5 +1,4 @@
 import { selectedAttributes } from "../components/attributes/Atrributes.slice";
-import { cartItemType } from "../components/cart/cart.slice";
 import { ProductType } from "../types/types";
 
 export function getAttributes(

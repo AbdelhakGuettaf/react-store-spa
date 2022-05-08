@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import styled from "styled-components";
 import { RootState } from "../../store/store";
 import { AttributeSet } from "../../types/types";
-import { cartItemType, setAttribute } from "../cart/cart.slice";
+import { cartItemType } from "../cart/cart.slice";
 import { selectAttribute, selectedAttributes } from "./Atrributes.slice";
 
 interface AttributeItemProps {
@@ -46,13 +46,13 @@ class AttributeItem extends React.Component<AttributeItemProps> {
                 : "#1D1F22",
             }}
           >
-            {this.props.size === "s"
-              ? /\d/.test(item.displayValue)
-                ? item.displayValue.toLocaleUpperCase() // if its a number display it all
-                : item.displayValue.length < 4 // if not then check length
-                ? item.displayValue.toLocaleUpperCase() // if its small then display
-                : item.displayValue.toLocaleUpperCase().charAt(0) // if not display only first letter
-              : item.displayValue.toLocaleUpperCase()}
+            {this.props.size === "s" // Added a basic string parsing to avoid displaying large values that may break the design
+              ? /\d/.test(item.value)
+                ? item.value.toLocaleUpperCase() // if its a number display it all
+                : item.value.length < 4 // if not then check length
+                ? item.value.toLocaleUpperCase() // if its small then display
+                : item.value.toLocaleUpperCase().charAt(0) // if not display only first letter
+              : item.value.toLocaleUpperCase()}
           </TextBox>
         );
       }
@@ -108,9 +108,8 @@ class AttributeItem extends React.Component<AttributeItemProps> {
   handleClick(AttribId: string, itemId: string) {
     if (this.props.cartId !== undefined) {
       // this functino checks cart state and sets its attributes
-      return;
-      /*this.props.dispatch(
-        setAttribute({
+      // uncomment the dispatch and import setAttribute action to enable attribute selection in cart
+      return; /*this.props.dispatch(setAttribute({
           cartItemId: this.props.cartId,
           attrib: { id: AttribId, itemId: itemId },
         })

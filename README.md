@@ -1,46 +1,33 @@
-# Getting Started with Create React App
+# :wave: Hello there!
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## What is this ? :thinking:
 
-## Available Scripts
+An eCommerce SPA app using router dom, with fully dynamic routing.
 
-In the project directory, you can run:
+This app was created with CRA TypeScript template.
 
-### `npm start`
+## Data fetch
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+endpoint url is in src/App.tsx line 33 ! :rocket:
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+Data is fetched using OPUS (:muscle: Awesome little tool). However, for simplicity, data is fetched in one go due to the design of the end-point. For scalablity, We can use RTK Query API if data gets too big or even limit the fetch and lazy load them at users' request.
 
-### `npm test`
+## Data flow
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+This app uses Redux/Toolkit since it is heavy on global state usage (currency, cart items...)
 
-### `npm run build`
+## Features not included in the original design
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+> User can change attributes from the MiniCart and Cart page to improve UX. (:lock: disabled in this build, see line 111 in components/attributes/AttribueItem.tsx)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+> Attributes of products in cart have a seperate state and should not interfere with products in PDP and PLP.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+> Responive layout and some media breaks, mobile view not provided but should work well on most devices.
 
-### `npm run eject`
+## Functionality:
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+> Any item added to cart will be processed, meaning a user cannot duplicate an item with the same attributes or an item that hasn't any. (logic is in ./utils/functions.ts and in components/cart/cart.slice.ts)
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+> User cannot add an out of stock item to cart but they can visit its PDP.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+Made with :heart: by Guettaf Abdelhak!

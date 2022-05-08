@@ -68,7 +68,7 @@ class CartItem extends React.Component<CartItemProps> {
               style={{
                 fontSize: this.props.mini ? "16px" : "",
                 fontWeight: this.props.mini ? "300" : "",
-                lineHeight: this.props.mini ? "1px" : "",
+                lineHeight: this.props.mini ? "15px" : "",
               }}
               onClick={() =>
                 this.props.dispatch(
