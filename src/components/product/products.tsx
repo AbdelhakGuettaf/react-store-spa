@@ -1,9 +1,9 @@
 import React from "react";
 import { NavigateFunction, Params } from "react-router-dom";
-import styled from "styled-components";
 import { ProductType } from "../../types/types";
 import withRouter from "../../utils/routerHOC";
 import Product from "./product";
+import { CardsWrapper } from "./productStyling";
 interface productsProps {
   products: ProductType[];
   router: {
@@ -30,14 +30,3 @@ class Products extends React.Component<productsProps> {
   }
 }
 export default withRouter(Products);
-
-const CardsWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  padding: 0 6%;
-  gap: 2.5%;
-  @media (max-width: 768px) {
-    justify-content: center;
-  }
-`;

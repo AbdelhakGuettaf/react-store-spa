@@ -1,5 +1,5 @@
 import React from "react";
-import { client, Query, Field } from "@tilework/opus";
+import { client } from "@tilework/opus";
 import { connect } from "react-redux";
 import { RootState } from "./store/store";
 import { Dispatch } from "@reduxjs/toolkit";
@@ -10,10 +10,11 @@ import MainHeader from "./components/header/Header";
 import Categories from "./pages/Categories";
 import "./assets/css/fonts.css";
 import Cart from "./pages/Cart";
+import { CATEGORIES, CURRENCIES } from "./utils/queries";
+import { addCurrencies } from "./app/app.slice";
 interface Props {
   dispatch: Dispatch;
   data: CategoryType[];
-  currency: string;
 }
 type State = {
   loading: boolean;
@@ -24,40 +25,11 @@ class App extends React.Component<Props, State> {
     this.state = { loading: true };
   }
   componentDidMount = async () => {
-    //********************************************************************
-    //* Fetching everything in one go here                               *
-    //* We can use RTK Query API if data gets too big                    *
-    //* We can even limit the fetch and lazy load them at users' request *
-    //********************************************************************
-
-    client.setEndpoint("http://localhost:4000/"); // <-------- Here :)
-
-    const query = new Query("categories", true).addField("name").addField(
-      new Field("products", true)
-        .addField("name")
-        .addField("gallery", true)
-        .addFieldList(["name", "inStock", "id", "description", "brand"])
-        .addField(
-          new Field("attributes", true)
-            .addFieldList(["id", "name", "type"])
-            .addField(
-              new Field("items", true).addFieldList([
-                "displayValue",
-                "value",
-                "id",
-              ])
-            )
-        )
-        .addField(
-          new Field("prices", true)
-            .addField("amount")
-            .addField(new Field("currency").addFieldList(["label", "symbol"]))
-        )
-    );
-    const queryResult = await client.post(query); // returns Categories with their products
-    const f: CategoryType[] = []; // Temporary array mutated to render only once
-    queryResult.categories.map((cat) => f.push(cat as CategoryType)); // Array mutated here to include all categories including their products
-    this.props.dispatch(addCategories(f));
+    client.setEndpoint("http://localhost:4000/");
+    const getCategoryNames = await client.post(CATEGORIES);
+    const getCurrencies = await client.post(CURRENCIES);
+    this.props.dispatch(addCategories(getCategoryNames.categories));
+    this.props.dispatch(addCurrencies(getCurrencies as any));
     this.setState(() => ({ loading: false }));
   };
   render() {
@@ -91,7 +63,6 @@ class App extends React.Component<Props, State> {
 
 const mapStateToProps = (state: RootState) => ({
   data: state.Categories,
-  currency: state.App.currency,
 });
 
 export default connect(mapStateToProps)(App);

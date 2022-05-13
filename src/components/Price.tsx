@@ -36,7 +36,7 @@ class Price extends React.Component<PriceProps> {
 }
 
 const mapStateToProps = (state: RootState) => ({
-  currency: state.App.currency,
+  currency: state.App.currentCurrency.currency,
 });
 
 export default connect(mapStateToProps)(Price);

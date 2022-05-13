@@ -84,8 +84,8 @@ class Cart extends React.Component<CartProps> {
 
 const mapStateToProps = (state: RootState) => ({
   items: state.Cart,
-  currency: state.App.currency,
-  symbol: state.App.symbol,
+  currency: state.App.currentCurrency.currency,
+  symbol: state.App.currentCurrency.symbol,
 });
 
 export default connect(mapStateToProps)(Cart);

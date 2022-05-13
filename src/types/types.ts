@@ -35,4 +35,5 @@ export type ProductType = {
 export type CategoryType = {
   name: string;
   products: ProductType[];
+  fetched: boolean;
 };

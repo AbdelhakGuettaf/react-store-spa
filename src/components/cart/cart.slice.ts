@@ -15,7 +15,7 @@ export const cartSlice = createSlice({
   initialState,
   reducers: {
     addToCart: (state, action: PayloadAction<cartItemType>) => {
-      if (!action.payload.product.inStock) return; // just incase user manages to add an item that is no inStock
+      if (!action.payload.product.inStock) return;
       if (
         !state.every((item) => item.product.id !== action.payload.product.id)
       ) {

@@ -2,28 +2,42 @@ import React from "react";
 import { CategoryType } from "../../types/types";
 import styled from "styled-components";
 import Products from "../product/products";
+import { connect } from "react-redux";
+import { RootState } from "../../store/store";
+import { Dispatch } from "@reduxjs/toolkit";
+import { getPLPData } from "../../utils/functions";
 
 interface CategoryProps {
   data: CategoryType;
+  dispatch: Dispatch;
 }
 
 class Category extends React.Component<CategoryProps> {
   capitalizeFirstLetter = (text: String) => {
     return text.charAt(0).toLocaleUpperCase() + text.slice(1);
   };
+
   render() {
+    const { data } = this.props;
+    const { name, products } = data;
     return (
       <MainWrapper>
-        <Title>{this.capitalizeFirstLetter(this.props.data.name)}</Title>
-        <Products products={this.props.data.products} />
+        <Title>{this.capitalizeFirstLetter(name)}</Title>
+        {products && <Products products={this.props.data.products} />}
       </MainWrapper>
     );
   }
-
-  componentDidMount() {}
+  async componentDidUpdate() {
+    getPLPData(this.props.data.name, this.props.data.name);
+  }
+  componentDidMount = async () => {
+    getPLPData(this.props.data.name, this.props.data.name);
+  };
 }
 
-export default Category;
+const mapStateToProps = (state: RootState) => ({});
+
+export default connect(mapStateToProps)(Category);
 
 const Title = styled.h1`
   //styleName: Heading / Desktop / H2;

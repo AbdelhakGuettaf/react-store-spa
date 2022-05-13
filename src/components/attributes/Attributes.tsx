@@ -13,7 +13,7 @@ class Attributes extends React.Component<AtributesProps> {
   render() {
     return (
       <>
-        {this.props.attributes[0] &&
+        {this.props.attributes &&
           this.props.attributes.map((attrib, idx) => {
             return (
               attrib && (

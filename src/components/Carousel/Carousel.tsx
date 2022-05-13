@@ -62,8 +62,9 @@ const Wrapper = styled.div`
 const Img = styled.img`
   display: block;
   max-width: 230px;
-  width: 100%;
+  max-height: 300px;
   margin: auto 0;
+  object-fit: cover;
 `;
 const Buttons = styled.div`
   position: absolute;

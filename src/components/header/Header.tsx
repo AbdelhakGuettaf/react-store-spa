@@ -47,6 +47,7 @@ class MainHeader extends React.Component<HeaderProps, State> {
     ));
   }
   getItems() {
+    if (!this.props.currencyList[0]) return;
     return (
       <CurrencyItem>
         <table style={{ borderCollapse: "collapse", width: "100%" }}>
@@ -232,12 +233,8 @@ class MainHeader extends React.Component<HeaderProps, State> {
 
 const mapStateToProps = (state: RootState) => ({
   data: state.Categories.map((cat) => cat.name),
-  currencyList: state.Categories[0].products[0].prices.map((price) => ({
-    // assuming every project has the same currencies
-    label: price.currency.label,
-    symbol: price.currency.symbol,
-  })),
-  currency: state.App,
+  currencyList: state.App.currencies,
+  currency: state.App.currentCurrency,
   cartCount: state.Cart.reduce(
     (preVal, currVal) => (preVal = preVal + currVal.quantity),
     0
@@ -323,15 +320,12 @@ const MiniCart = styled.div`
   position: absolute;
   right: -2%;
   top: 80px;
-  max-height: 90vh;
+  height: 60vh;
   min-width: 290px;
   width: 27%;
   background: white;
   overflow-x: hidden;
   overflow-y: scroll;
-  ::-webkit-scrollbar {
-    display: none;
-  }
 `;
 const Overlay = styled.div`
   position: fixed;

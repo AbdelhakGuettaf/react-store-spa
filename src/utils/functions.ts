@@ -1,5 +1,12 @@
+import { client } from "@tilework/opus";
 import { selectedAttributes } from "../components/attributes/Atrributes.slice";
+import {
+  addProductDescription,
+  addProducts,
+} from "../components/categories.slice";
+import { store } from "../store/store";
 import { ProductType } from "../types/types";
+import { PDP_DATA, PLP_PRODUCT_DATA, PRODUCT_DATA_All } from "./queries";
 
 export function getAttributes(
   product: ProductType,
@@ -54,3 +61,50 @@ export function getAttributes(
   // if user selected all attributes return the state attributes
   return stateAttribs;
 }
+export async function getPLPData(category: string, path: string) {
+  const { Categories } = store.getState();
+  const Cat = Categories.find((cat) => cat.name === category);
+  if (Cat?.fetched && Cat?.fetched !== undefined) return;
+  const DATA = await client.post(PLP_PRODUCT_DATA(category));
+  store.dispatch(
+    addProducts({
+      productData: DATA.category?.products,
+      category: path,
+    })
+  );
+}
+
+export async function getPDPData(productId: string) {
+  const { Categories } = store.getState();
+  const product = Categories.map((cat) => {
+    if (cat.products)
+      return cat.products.find(
+        (product) => product.id === productId ?? product
+      );
+    return null;
+  }).find(Boolean);
+  if (!product) {
+    const PRODUCT = await client.post(PRODUCT_DATA_All(productId));
+    store.dispatch(
+      addProductDescription({
+        catName: PRODUCT.product.category,
+        productData: PRODUCT.product,
+      })
+    );
+    return;
+  }
+  if (product.attributes && product.description) return;
+  const PRODUCT = await client.post(PDP_DATA(productId));
+  console.log(PRODUCT);
+  store.dispatch(
+    addProductDescription({
+      catName: PRODUCT.product.category,
+      productData: PRODUCT.product,
+    })
+  );
+}
+/* 
+
+  
+  if (!products) {
+*/

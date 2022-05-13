@@ -1,13 +1,15 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-export type currency = {
-  currency: string;
-  symbol: string;
-};
+export type currency = { currency: string; symbol: string };
 
-const initialState: currency = {
-  currency: "USD",
-  symbol: "$",
+interface Currency {
+  currentCurrency: currency;
+  currencies: { label: string; symbol: string }[];
+}
+
+const initialState: Currency = {
+  currentCurrency: { currency: "USD", symbol: "$" },
+  currencies: [{ label: "USD", symbol: "$" }],
 };
 
 export const AppSlice = createSlice({
@@ -15,11 +17,17 @@ export const AppSlice = createSlice({
   initialState,
   reducers: {
     changeCurrency: (state, action: PayloadAction<currency>) => {
-      return { ...action.payload };
+      return { ...state, currentCurrency: action.payload };
+    },
+    addCurrencies: (
+      state,
+      action: PayloadAction<{ label: any; symbol: any }[]>
+    ) => {
+      return { ...state, currencies: action.payload };
     },
   },
 });
 
-export const { changeCurrency } = AppSlice.actions;
+export const { changeCurrency, addCurrencies } = AppSlice.actions;
 
 export default AppSlice.reducer;

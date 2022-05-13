@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CategoryType } from "../types/types";
+import { CategoryType, ProductType } from "../types/types";
 
 const initialState: CategoryType[] = [];
 
@@ -7,19 +7,61 @@ export const CategorySlice = createSlice({
   name: "Categories",
   initialState,
   reducers: {
-    addCategory: (state, action: PayloadAction<CategoryType>) => {
+    addCategory: (state, action) => {
       if (!state.every((category) => category.name === action.payload.name)) {
         return;
       }
       return [...state, action.payload];
     },
-    addCategories: (state, action: PayloadAction<CategoryType[]>) => {
+    addCategories: (state, action) => {
       return (state = action.payload);
+    },
+    addProducts: (
+      state,
+      {
+        payload: { productData, category },
+      }: PayloadAction<{ productData: any; category: string }>
+    ) => {
+      return state.map((cat) => {
+        if (cat.name === category) {
+          return { ...cat, products: productData, fetched: true };
+        }
+        return cat;
+      });
+    },
+    addProductDescription: (
+      state,
+      {
+        payload: { productData, catName },
+      }: PayloadAction<{ productData: any; catName: string }>
+    ) => {
+      return state.map((cat) => {
+        if (cat.name === catName || cat.name === "all") {
+          if (cat.products === undefined) {
+            return { ...cat, products: [productData] };
+          }
+          let newProduct = {
+            ...cat.products.find((pro) => pro.id === productData.id),
+            ...productData,
+          };
+          let newArray = cat.products.map((pro) => {
+            if (pro.id === productData.id) {
+              return newProduct;
+            }
+            return pro;
+          });
+          return { ...cat, products: [...newArray] };
+        }
+        return cat;
+      });
     },
   },
 });
-
-// Action creators are generated for each case reducer function
-export const { addCategory, addCategories } = CategorySlice.actions;
+export const {
+  addCategory,
+  addCategories,
+  addProducts,
+  addProductDescription,
+} = CategorySlice.actions;
 
 export default CategorySlice.reducer;

@@ -10,7 +10,6 @@ import Product from "./Product";
 interface CategoriesProps {
   dispatch: Dispatch;
   data: CategoryType[];
-  currency: string;
 }
 
 class Categories extends React.Component<CategoriesProps> {
@@ -56,7 +55,6 @@ class Categories extends React.Component<CategoriesProps> {
 
 const mapStateToProps = (state: RootState) => ({
   data: state.Categories,
-  currency: state.App.currency,
 });
 
 export default connect(mapStateToProps)(Categories);
