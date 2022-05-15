@@ -12,10 +12,11 @@ interface CartItemsProps {
 
 class CartItems extends React.Component<CartItemsProps> {
   render() {
+    const { items, mini } = this.props;
     return (
       <ItemsWrapper>
-        {this.props.items.map((item, key) => (
-          <CartItem mini={this.props.mini} item={item} key={key} />
+        {items.map((item, key) => (
+          <CartItem mini={mini} item={item} key={key} />
         ))}
       </ItemsWrapper>
     );

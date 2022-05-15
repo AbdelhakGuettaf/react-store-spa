@@ -1,4 +1,4 @@
-import { createSlice, current, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ProductType } from "../../types/types";
 
 export type cartItemType = {
@@ -15,18 +15,15 @@ export const cartSlice = createSlice({
   initialState,
   reducers: {
     addToCart: (state, action: PayloadAction<cartItemType>) => {
-      if (!action.payload.product.inStock) return;
-      if (
-        !state.every((item) => item.product.id !== action.payload.product.id)
-      ) {
-        // product already in cart so we'll check if user changed attributes here
-        if (action.payload.attribs === undefined) return; // if item has no attributes then don't add to cart if exists
+      const { product, attribs } = action.payload;
+      if (!product.inStock) return;
+      if (!state.every(({ product: { id } }) => id !== product.id)) {
+        if (attribs === undefined) return;
 
         const checkObjects = (
           o1: { [x: string]: any },
           o2: { [x: string]: any }
         ) => {
-          console.log(o1, current(o2));
           return (
             Object.keys(o1).length === Object.keys(o2).length &&
             Object.keys(o1).every((p) => o1[p] === o2[p])
@@ -34,41 +31,35 @@ export const cartSlice = createSlice({
         };
 
         const cartItem = state.filter(
-          (i) => i.product.id === action.payload.product.id
-        ); // this could be an array as user may have added multiple products with different attributes
+          ({ product: { id } }) => id === product.id
+        );
 
-        //let checker: boolean = false; // this is a halfassed way to go about it, this var get mutated to true proudct attribs haven't changed
+        let ItemId: number;
 
         const arrayCheck = (arr: any) => {
-          //this function recieves all attribute arrays of the same product
-          // and checks them again the payload attributes
-          // if
-          console.log("******");
-          console.log(action.payload.attribs);
           if (arr === undefined) return false;
           let checker = false;
           arr.forEach((cartArr: any) => {
-            action.payload.attribs?.forEach((actionAtt) => {
+            attribs?.forEach((actionAtt) => {
               if (actionAtt.id !== cartArr.id) return;
-              if (!checkObjects(actionAtt, cartArr)) checker = true;
+              if (!checkObjects(actionAtt, cartArr)) return (checker = true);
             });
           });
-          console.log(checker);
-          console.log("******");
           return checker;
-          /*return arr.every(
-            (cartAtt: any) =>
-              action.payload.attribs &&
-              action.payload.attribs.every((att) => checkObjects(att, cartAtt))
-          );*/
         };
         const booleans: boolean[] = [];
-        cartItem.forEach((cart) => {
-          booleans.push(arrayCheck(cart.attribs));
+        cartItem.forEach(({ attribs, id }) => {
+          booleans.push(arrayCheck(attribs));
+          if (!arrayCheck(attribs)) ItemId = id;
         });
         if (booleans.every((val) => val === true))
           return [...state, action.payload];
-        return;
+        return state.map((item) => {
+          if (item.id === ItemId) {
+            return { ...item, quantity: item.quantity + 1 };
+          }
+          return item;
+        });
       }
       return [...state, action.payload];
     },
@@ -91,12 +82,14 @@ export const cartSlice = createSlice({
         attrib: { id: string; itemId: string };
       }>
     ) => {
+      const { attrib, cartItemId } = action.payload;
       state.map((item) => {
-        if (item.id === action.payload.cartItemId) {
-          if (item.attribs === undefined) return action.payload;
-          item.attribs.map((attrib) => {
-            if (attrib.id === action.payload.attrib.id) {
-              return (attrib.itemId = action.payload.attrib.itemId);
+        const { id, attribs } = item;
+        if (id === cartItemId) {
+          if (attribs === undefined) return action.payload;
+          attribs.map(({ id, itemId }) => {
+            if (id === attrib.id) {
+              return (itemId = attrib.itemId);
             }
             return attrib;
           });
@@ -107,13 +100,12 @@ export const cartSlice = createSlice({
     removeFromCart: (state, action: PayloadAction<{ itemId: number }>) => {
       return [...state.filter((item) => item.id !== action.payload.itemId)];
     },
-    clearCart: (state) => {
+    clearCart: () => {
       return initialState;
     },
   },
 });
 
-// Action creators are generated for each case reducer function
 export const {
   addToCart,
   incrementCount,

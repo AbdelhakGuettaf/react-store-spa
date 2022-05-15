@@ -4,7 +4,6 @@ import { selectedAttributes } from "../components/attributes/Atrributes.slice";
 import ProductDescription from "../components/product/PDP/productDescription";
 import { RootState } from "../store/store";
 import { CategoryType } from "../types/types";
-import { getPDPData } from "../utils/functions";
 
 interface PDPProps {
   attributeState: selectedAttributes[];

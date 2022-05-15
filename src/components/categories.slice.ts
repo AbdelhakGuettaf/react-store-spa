@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CategoryType, ProductType } from "../types/types";
+import { CategoryType } from "../types/types";
 
 const initialState: CategoryType[] = [];
 

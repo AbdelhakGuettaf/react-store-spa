@@ -11,6 +11,7 @@ import { changeCurrency, currency } from "../../app/app.slice";
 import { Dispatch } from "@reduxjs/toolkit";
 import CartItems from "../cart/cartItems";
 import { cartItemType, clearCart } from "../cart/cart.slice";
+import * as Styled from "./Header.styling";
 interface HeaderProps {
   data: String[];
   cartCount: number;
@@ -32,7 +33,7 @@ class MainHeader extends React.Component<HeaderProps, State> {
     super(props);
     this.state = { toggleCurrency: false, toggleCart: false };
   }
-  getNames() {
+  getCategoryNames() {
     return this.props.data.map((name, key) => (
       <SLink
         key={key}
@@ -47,37 +48,40 @@ class MainHeader extends React.Component<HeaderProps, State> {
     ));
   }
   getItems() {
-    if (!this.props.currencyList[0]) return;
+    const { currencyList, currency, dispatch } = this.props;
+    if (!currencyList[0]) return;
     return (
-      <CurrencyItem>
+      <Styled.CurrencyItem>
         <table style={{ borderCollapse: "collapse", width: "100%" }}>
           <tbody>
-            {this.props.currencyList.map((item, key) => (
-              <TR
-                style={{
-                  backgroundColor:
-                    item.label === this.props.currency.currency // current currency
-                      ? "#eeeeee"
-                      : "",
-                }}
-                key={key}
-                onClick={() => {
-                  this.props.dispatch(
-                    changeCurrency({
-                      symbol: item.symbol,
-                      currency: item.label,
-                    })
-                  );
-                  this.setState(() => ({ toggleCurrency: false }));
-                }}
-              >
-                <TD>{item.symbol}</TD>
-                <TD style={{ textAlign: "left" }}>{item.label}</TD>
-              </TR>
-            ))}
+            {currencyList.map((item, key) => {
+              return (
+                <Styled.TR
+                  style={{
+                    backgroundColor:
+                      item.label === currency.currency ? "#eeeeee" : "",
+                  }}
+                  key={key}
+                  onClick={() => {
+                    dispatch(
+                      changeCurrency({
+                        symbol: item.symbol,
+                        currency: item.label,
+                      })
+                    );
+                    this.setState(() => ({ toggleCurrency: false }));
+                  }}
+                >
+                  <Styled.TD>{item.symbol}</Styled.TD>
+                  <Styled.TD style={{ textAlign: "left" }}>
+                    {item.label}
+                  </Styled.TD>
+                </Styled.TR>
+              );
+            })}
           </tbody>
         </table>
-      </CurrencyItem>
+      </Styled.CurrencyItem>
     );
   }
   getTotalPrice() {
@@ -95,22 +99,23 @@ class MainHeader extends React.Component<HeaderProps, State> {
   }
   render() {
     const { toggleCart, toggleCurrency } = this.state;
+    const { currency, cartCount, dispatch } = this.props;
     return (
-      <Header>
-        <Wrapper>
-          <NavLinksWrap>
-            <Nav style={{}}>{this.getNames()}</Nav>
-          </NavLinksWrap>
-          <Img src={logo} alt="Green Logo" />
-          <Actions>
-            <Currency
+      <Styled.Header>
+        <Styled.Wrapper>
+          <Styled.NavLinksWrap>
+            <Styled.Nav style={{}}>{this.getCategoryNames()}</Styled.Nav>
+          </Styled.NavLinksWrap>
+          <Styled.Img src={logo} alt="Green Logo" />
+          <Styled.Actions>
+            <Styled.Currency
               onClick={() =>
                 this.setState(() => ({
                   toggleCurrency: !toggleCurrency,
                 }))
               }
             >
-              <div>{this.props.currency.symbol}</div>
+              <div>{currency.symbol}</div>
               <div
                 style={{
                   display: "flex",
@@ -129,8 +134,8 @@ class MainHeader extends React.Component<HeaderProps, State> {
                   alt="Toggle drop down currency"
                 />
               </div>
-            </Currency>
-            <CurrencyList
+            </Styled.Currency>
+            <Styled.CurrencyList
               style={{
                 top: toggleCurrency ? "0px" : "-100vh",
                 opacity: toggleCurrency ? "1" : "0",
@@ -144,8 +149,8 @@ class MainHeader extends React.Component<HeaderProps, State> {
               }
             >
               {this.getItems()}
-            </CurrencyList>
-            <Overlay
+            </Styled.CurrencyList>
+            <Styled.Overlay
               onClick={() =>
                 this.setState(() => ({
                   toggleCurrency: false,
@@ -159,7 +164,7 @@ class MainHeader extends React.Component<HeaderProps, State> {
                   : "transparent",
                 transition: "all 150ms ease",
               }}
-            ></Overlay>
+            ></Styled.Overlay>
             <button
               style={{
                 border: "none",
@@ -171,13 +176,11 @@ class MainHeader extends React.Component<HeaderProps, State> {
               }}
               onClick={() =>
                 this.setState(() => ({
-                  toggleCart: !this.state.toggleCart,
+                  toggleCart: !toggleCart,
                 }))
               }
             >
-              {this.props.cartCount > 0 && (
-                <Items>{this.props.cartCount}</Items>
-              )}
+              {cartCount > 0 && <Styled.Items>{cartCount}</Styled.Items>}
               <img
                 src={cartLogo}
                 style={{ margin: "auto 0" }}
@@ -186,27 +189,27 @@ class MainHeader extends React.Component<HeaderProps, State> {
                 alt="Cart Logo"
               />
             </button>
-            <MiniCart style={{ top: toggleCart ? "" : "-100vh" }}>
-              <MiniWrapper>
-                <Title>
+            <Styled.MiniCart style={{ top: toggleCart ? "" : "-100vh" }}>
+              <Styled.MiniWrapper>
+                <Styled.Title>
                   My Bag,
-                  <SubTitle>
-                    {this.props.cartCount}
-                    {this.props.cartCount === 1 ? " item" : " items"}
-                  </SubTitle>
-                </Title>
+                  <Styled.SubTitle>
+                    {cartCount}
+                    {cartCount === 1 ? " item" : " items"}
+                  </Styled.SubTitle>
+                </Styled.Title>
                 <CartItems mini />
-                <Total>
+                <Styled.Total>
                   Total:
                   <div style={{ marginLeft: "auto" }}>
-                    {this.props.currency.symbol +
+                    {currency.symbol +
                       (
                         this.getTotalPrice() +
                         this.getTotalPrice() * 0.21
                       ).toFixed(2)}{" "}
                   </div>
-                </Total>
-                <ButtonWrap>
+                </Styled.Total>
+                <Styled.ButtonWrap>
                   <Bag
                     to={"/cart"}
                     onClick={() =>
@@ -218,15 +221,15 @@ class MainHeader extends React.Component<HeaderProps, State> {
                   >
                     VIEW BAG
                   </Bag>
-                  <Checkout onClick={() => this.props.dispatch(clearCart())}>
+                  <Styled.Checkout onClick={() => dispatch(clearCart())}>
                     CHECK OUT
-                  </Checkout>
-                </ButtonWrap>
-              </MiniWrapper>
-            </MiniCart>
-          </Actions>
-        </Wrapper>
-      </Header>
+                  </Styled.Checkout>
+                </Styled.ButtonWrap>
+              </Styled.MiniWrapper>
+            </Styled.MiniCart>
+          </Styled.Actions>
+        </Styled.Wrapper>
+      </Styled.Header>
     );
   }
 }
@@ -244,7 +247,15 @@ const mapStateToProps = (state: RootState) => ({
 
 export default connect(mapStateToProps)(MainHeader);
 
-const Bag = styled(NavLink)`
+const SLink = styled(NavLink)`
+  font-family: Raleway;
+  font-size: 16px;
+  line-height: 19px;
+  letter-spacing: 0px;
+  text-align: center;
+  padding: 0 16px;
+`;
+export const Bag = styled(NavLink)`
   width: 100%;
   padding: 13px 0;
   color: #1d1f22;
@@ -260,205 +271,5 @@ const Bag = styled(NavLink)`
     cursor: pointer;
     background-color: #1d1f22;
     color: white;
-  }
-`;
-const Checkout = styled.button`
-  width: 100%;
-  padding: 13px 0;
-  font-family: Raleway;
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 17px;
-  letter-spacing: 0em;
-  text-align: center;
-  background-color: #5ece7b;
-  color: white;
-  border-color: transparent;
-  &:hover {
-    cursor: pointer;
-  }
-`;
-const ButtonWrap = styled.div`
-  margin: 32px 0;
-  display: flex;
-  flex-directino: row;
-  width: 100%;
-  gap: 12px;
-`;
-const Total = styled.div`
-  font-family: Raleway;
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 26px;
-  letter-spacing: 0em;
-  display: flex;
-  flex-directino: row;
-`;
-
-const Title = styled.div`
-  font-family: Raleway;
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 26px;
-  letter-spacing: 0em;
-  display: flex;
-  flex-directino: row;
-  margin: 32px 0;
-`;
-const SubTitle = styled.div`
-  font-family: Raleway;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 26px;
-  letter-spacing: 0em;
-`;
-const MiniWrapper = styled.div`
-  position: relative;
-  padding: 5px 20px;
-`;
-const MiniCart = styled.div`
-  position: absolute;
-  right: -2%;
-  top: 80px;
-  height: 60vh;
-  min-width: 290px;
-  width: 27%;
-  background: white;
-  overflow-x: hidden;
-  overflow-y: scroll;
-`;
-const Overlay = styled.div`
-  position: fixed;
-  width: 100vw;
-  height: 100%;
-  min-height: 100vh;
-  top: 80px;
-  right: 0;
-  padding: 0;
-  margin: 0;
-`;
-const CurrencyList = styled.div`
-  position: absolute;
-  min-width: 100px;
-  width: 7%;
-  height: 100vh;
-  right: -2%;
-  z-index: 99;
-`;
-const CurrencyItem = styled.div`
-  font-family: Raleway;
-  font-size: 18px;
-  font-weight: 500;
-  line-height: 29px;
-  letter-spacing: 0em;
-  text-align: right;
-  cursor: pointer;
-  width: 100%;
-  position: absolute;
-  top: 70px;
-`;
-const TR = styled.tr`
-  margin-top: 5px;
-
-  background-color: white;
-  &:hover {
-    background: #eeeeee;
-  }
-`;
-const TD = styled.td`
-  margin: 0 5px;
-  padding: 9px 5px;
-`;
-const Currency = styled.div`
-  //styleName: --price-regular-font;
-  font-family: Raleway;
-  font-size: 18px;
-  font-weight: 500;
-  line-height: 29px;
-  letter-spacing: 0em;
-  text-align: left;
-  margin: auto 0;
-  cursor: pointer;
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-`;
-
-const Items = styled.div`
-  position: absolute;
-  margin: auto 10px;
-  width: 20px;
-  height: 20px;
-  background-color: #1d1f22;
-  border-radius: 50%;
-  color: white;
-  font-family: Roboto;
-  font-size: 14px;
-  font-weight: 700;
-  line-height: 20px;
-  letter-spacing: 0em;
-  text-align: center;
-`;
-
-const SLink = styled(NavLink)`
-  font-family: Raleway;
-  font-size: 16px;
-  line-height: 19px;
-  letter-spacing: 0px;
-  text-align: center;
-  padding: 0 16px;
-`;
-
-const Header = styled.header`
-  width: 100%;
-  height: 80px;
-  background-color: white;
-  left: 0px;
-  top: 80px;
-`;
-
-const Wrapper = styled.div`
-  width: 86%;
-  height: 80px;
-  background-color: white;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  position: fixed;
-  z-index: 10;
-  margin-left: 7%;
-`;
-
-const Nav = styled.div`
-  height: 56px;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-`;
-
-const NavLinksWrap = styled.div`
-  height: 100%;
-  background: white;
-  display: flex;
-  flex-direction: column-reverse;
-  margin-right: auto;
-`;
-
-const Actions = styled.div`
-  align-self: flex-end;
-  height: 40px;
-  background: white;
-  display: flex;
-  flex-direction: row;
-  padding: auto 10px;
-  gap: 20px;
-  margin: auto 0;
-  z-index: 1;
-`;
-const Img = styled.img`
-  align-self: center;
-  position: absolute;
-  @media (max-width: 768px) {
-    display: none;
   }
 `;

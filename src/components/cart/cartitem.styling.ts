@@ -11,7 +11,6 @@ export const CartItemWrap = styled.div`
 export const LeftVStack = styled.div`
   display: flex;
   flex-direction: column;
-  min-width: 200px;
 `;
 export const Brand = styled.div`
   font-family: Raleway;
@@ -36,6 +35,7 @@ export const RightHStack = styled.div`
 `;
 export const GalleryWrapper = styled.div`
   display: flex;
+  justify-content: center;
   width: 200px;
 `;
 export const Quantity = styled.div`
@@ -91,4 +91,6 @@ export const Img = styled.img`
   width: 80%;
   max-height: 150px;
   object-fit: cover;
+  margin: auto 0;
+  margin-right: 20px;
 `;

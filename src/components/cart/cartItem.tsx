@@ -21,7 +21,10 @@ interface CartItemProps {
 class CartItem extends React.Component<CartItemProps> {
   render() {
     const { mini, dispatch, item } = this.props;
-    const { id, product, quantity } = item;
+    const {
+      product: { brand, name, gallery, prices, attributes, id },
+      quantity,
+    } = item;
     return (
       <Styled.CartItemWrap
         style={{ minHeight: mini ? "150px" : "300px", maxHeight: "auto" }}
@@ -29,6 +32,7 @@ class CartItem extends React.Component<CartItemProps> {
         <Styled.LeftVStack
           style={{
             gap: mini ? "4" : "15px",
+            minWidth: mini ? "50%" : "200px",
           }}
         >
           <Styled.Brand
@@ -37,7 +41,7 @@ class CartItem extends React.Component<CartItemProps> {
               fontWeight: mini ? "300" : "",
             }}
           >
-            {product.brand}
+            {brand}
           </Styled.Brand>
           <Styled.Name
             style={{
@@ -45,20 +49,20 @@ class CartItem extends React.Component<CartItemProps> {
               fontWeight: mini ? "300" : "",
             }}
           >
-            {product.name}
+            {name}
           </Styled.Name>
           <div>
             <Price
-              price={product.prices}
+              price={prices}
               size={mini ? 16 : 24}
               wieght={mini ? "500" : "700"}
             />
           </div>
           <Attributes
             size={mini ? "s" : "lg"}
-            cart={id}
-            productID={product.id}
-            attributes={product.attributes}
+            cart={item.id}
+            productID={id}
+            attributes={attributes}
           ></Attributes>
         </Styled.LeftVStack>
         <Styled.RightHStack>
@@ -74,7 +78,7 @@ class CartItem extends React.Component<CartItemProps> {
                 fontWeight: mini ? "300" : "",
                 lineHeight: mini ? "15px" : "",
               }}
-              onClick={() => dispatch(incrementCount({ itemId: id }))}
+              onClick={() => dispatch(incrementCount({ itemId: item.id }))}
             >
               +
             </Styled.TopButton>
@@ -93,10 +97,10 @@ class CartItem extends React.Component<CartItemProps> {
               }}
               onClick={() => {
                 if (quantity === 1) {
-                  dispatch(removeFromCart({ itemId: id }));
+                  dispatch(removeFromCart({ itemId: item.id }));
                   return;
                 }
-                dispatch(decrementCount({ itemId: id }));
+                dispatch(decrementCount({ itemId: item.id }));
               }}
             >
               -
@@ -104,9 +108,9 @@ class CartItem extends React.Component<CartItemProps> {
           </Styled.Quantity>
           <Styled.GalleryWrapper>
             {mini ? (
-              <Styled.Img src={product.gallery[0]} alt="Product Gallery" />
+              <Styled.Img src={gallery[0]} alt="Product Gallery" />
             ) : (
-              <Carousel imgs={product.gallery} />
+              <Carousel imgs={gallery} />
             )}
           </Styled.GalleryWrapper>
         </Styled.RightHStack>

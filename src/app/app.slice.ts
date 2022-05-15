@@ -9,7 +9,7 @@ interface Currency {
 
 const initialState: Currency = {
   currentCurrency: { currency: "USD", symbol: "$" },
-  currencies: [{ label: "USD", symbol: "$" }],
+  currencies: [],
 };
 
 export const AppSlice = createSlice({

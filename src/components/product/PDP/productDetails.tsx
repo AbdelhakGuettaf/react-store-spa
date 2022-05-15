@@ -1,7 +1,6 @@
 import { Dispatch } from "@reduxjs/toolkit";
 import React from "react";
 import { connect } from "react-redux";
-import { currency } from "../../../app/app.slice";
 import { RootState } from "../../../store/store";
 import { ProductType } from "../../../types/types";
 import { selectedAttributes } from "../../attributes/Atrributes.slice";
@@ -19,33 +18,33 @@ interface Props {
 
 class ProductDetails extends React.Component<Props> {
   addToCart() {
-    this.props.dispatch(
+    const { dispatch, product, attributeState } = this.props;
+    dispatch(
       addToCart({
-        attribs: getAttributes(this.props.product, this.props.attributeState),
+        attribs: getAttributes(product, attributeState),
         id: Date.now(),
-        product: this.props.product,
+        product: product,
         quantity: 1,
       })
     );
   }
   render() {
+    const {
+      product: { brand, name, attributes, id, prices, inStock, description },
+    } = this.props;
     return (
       <Styled.DetailsWrap>
-        <Styled.Brand>{this.props.product.brand}</Styled.Brand>
-        <Styled.Name> {this.props.product.name} </Styled.Name>
-        <Attributes
-          size="lg"
-          attributes={this.props.product.attributes}
-          productID={this.props.product.id}
-        />
+        <Styled.Brand>{brand}</Styled.Brand>
+        <Styled.Name> {name} </Styled.Name>
+        <Attributes size="lg" attributes={attributes} productID={id} />
         <Styled.Span>PRICE:</Styled.Span>
-        <Price price={this.props.product.prices} size={24} wieght={"700"} />
+        <Price price={prices} size={24} wieght={"700"} />
         <Styled.CartButton
           style={{
-            backgroundColor: this.props.product.inStock ? "#5ece7b" : "#eeeeee",
+            backgroundColor: inStock ? "#5ece7b" : "#eeeeee",
           }}
           onClick={() => {
-            if (!this.props.product.inStock) return;
+            if (!inStock) return;
             this.addToCart();
           }}
         >
@@ -53,7 +52,7 @@ class ProductDetails extends React.Component<Props> {
         </Styled.CartButton>
         <Styled.Description
           dangerouslySetInnerHTML={{
-            __html: DOMPurify.sanitize(this.props.product.description),
+            __html: DOMPurify.sanitize(description),
           }}
         ></Styled.Description>
       </Styled.DetailsWrap>

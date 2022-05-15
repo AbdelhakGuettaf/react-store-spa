@@ -13,9 +13,10 @@ interface PriceProps {
 
 class Price extends React.Component<PriceProps> {
   getPrice() {
-    if (this.props.price !== undefined && this.props.price[0] !== undefined) {
-      return this.props.price
-        .filter((price) => price.currency.label === this.props.currency)
+    const { price, currency } = this.props;
+    if (price !== undefined && price[0] !== undefined) {
+      return price
+        .filter((price) => price.currency.label === currency)
         .map((price) => {
           return price.currency.symbol + price.amount.toFixed(2).toString();
         });

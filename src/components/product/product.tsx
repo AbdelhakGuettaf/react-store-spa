@@ -8,7 +8,7 @@ import CartLogo from "../../assets/Circle-Icon.svg";
 import { selectedAttributes } from "../attributes/Atrributes.slice";
 import { Dispatch } from "@reduxjs/toolkit";
 import { addToCart } from "../cart/cart.slice";
-import { getAttributes } from "../../utils/functions";
+import { getAttributes, getPDPData } from "../../utils/functions";
 import * as Styled from "./productStyling";
 
 interface productProps {
@@ -40,7 +40,24 @@ class Product extends React.Component<productProps> {
             <Styled.Img src={gallery && gallery[0]} alt={name + brand} />
             {inStock && (
               <Styled.CircleIcon
-                onClick={() =>
+                onClick={() => {
+                  if (!product.attributes) {
+                    getPDPData(product.id).then((res) => {
+                      let Product = { ...product, ...res?.product };
+                      dispatch(
+                        addToCart({
+                          id: Date.now(),
+                          product: Product as ProductType,
+                          quantity: 1,
+                          attribs: getAttributes(
+                            Product as ProductType,
+                            attributeState
+                          ),
+                        })
+                      );
+                    });
+                    return;
+                  }
                   dispatch(
                     addToCart({
                       id: Date.now(),
@@ -48,8 +65,8 @@ class Product extends React.Component<productProps> {
                       quantity: 1,
                       attribs: getAttributes(product, attributeState),
                     })
-                  )
-                }
+                  );
+                }}
                 src={CartLogo}
                 alt="icon"
               />

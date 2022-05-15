@@ -23,15 +23,15 @@ class Category extends React.Component<CategoryProps> {
     return (
       <MainWrapper>
         <Title>{this.capitalizeFirstLetter(name)}</Title>
-        {products && <Products products={this.props.data.products} />}
+        {products && <Products products={data.products} />}
       </MainWrapper>
     );
   }
   async componentDidUpdate() {
-    getPLPData(this.props.data.name, this.props.data.name);
+    getPLPData(this.props.data.name);
   }
   componentDidMount = async () => {
-    getPLPData(this.props.data.name, this.props.data.name);
+    getPLPData(this.props.data.name);
   };
 }
 

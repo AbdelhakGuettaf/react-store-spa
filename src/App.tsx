@@ -29,16 +29,15 @@ class App extends React.Component<Props, State> {
     const getCategoryNames = await client.post(CATEGORIES);
     const getCurrencies = await client.post(CURRENCIES);
     this.props.dispatch(addCategories(getCategoryNames.categories));
-    this.props.dispatch(addCurrencies(getCurrencies as any));
+    this.props.dispatch(addCurrencies(getCurrencies.currencies as any));
     this.setState(() => ({ loading: false }));
   };
   render() {
-    console.log("Render"); // Render Counter
-    console.log("==============="); // Render Counter
     if (this.state.loading)
       return (
         <h1 style={{ textAlign: "center", marginTop: "20%" }}>Loading...</h1>
       );
+    const { data } = this.props;
     return (
       <>
         <MainHeader />
@@ -46,8 +45,8 @@ class App extends React.Component<Props, State> {
           <Route
             path="/"
             element={
-              this.props.data[0] ? (
-                <Navigate to={`/${this.props.data[0].name}`} replace />
+              data[0] ? (
+                <Navigate to={`/${data[0].name}`} replace />
               ) : (
                 <div>No Data</div>
               )

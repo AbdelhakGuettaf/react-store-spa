@@ -15,12 +15,16 @@ interface productsProps {
 
 class Products extends React.Component<productsProps> {
   render() {
+    const {
+      products,
+      router: { location, navigate },
+    } = this.props;
     return (
       <CardsWrapper>
-        {this.props.products.map((product, key) => (
+        {products.map((product, key) => (
           <Product
-            navigate={this.props.router.navigate}
-            location={this.props.router.location}
+            navigate={navigate}
+            location={location}
             key={key}
             product={product}
           />

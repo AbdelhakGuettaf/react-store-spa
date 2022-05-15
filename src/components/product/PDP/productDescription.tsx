@@ -22,15 +22,20 @@ interface PDPProps {
 
 class ProductDescription extends React.Component<PDPProps> {
   getProduct() {
+    const {
+      categories,
+      router: { params },
+    } = this.props;
     return (
-      this.props.categories &&
-      this.props.categories.map((cat) => {
-        if (Array.isArray(cat.products)) {
-          return cat.products.find(
-            (product) => product.id === this.props.router.params.productID
-          );
-        }
-      })[0]
+      categories &&
+      categories
+        .map(({ products }) => {
+          if (Array.isArray(products)) {
+            return products.find(({ id }) => id === params.productID);
+          }
+          return null;
+        })
+        .find(Boolean)
     );
   }
 
