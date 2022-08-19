@@ -1,16 +1,17 @@
 import React from "react";
-import { client } from "@tilework/opus";
+//import { client } from "@tilework/opus";
 import { connect } from "react-redux";
 import { RootState } from "./store/store";
 import { Dispatch } from "@reduxjs/toolkit";
-import { CategoryType } from "./types/types";
+import { CategoryType, Currency } from "./types/types";
 import { addCategories } from "./components/categories.slice";
 import { Navigate, Route, Routes } from "react-router-dom";
 import MainHeader from "./components/header/Header";
 import Categories from "./pages/Categories";
 import "./assets/css/fonts.css";
 import Cart from "./pages/Cart";
-import { CATEGORIES, CURRENCIES } from "./utils/queries";
+//import { CATEGORIES, CURRENCIES } from "./utils/queries";
+import Data from "./app/data.json";
 import { addCurrencies } from "./app/app.slice";
 interface Props {
   dispatch: Dispatch;
@@ -25,11 +26,16 @@ class App extends React.Component<Props, State> {
     this.state = { loading: true };
   }
   componentDidMount = async () => {
+    /*
     client.setEndpoint("http://localhost:4000/");
     const getCategoryNames = await client.post(CATEGORIES);
     const getCurrencies = await client.post(CURRENCIES);
     this.props.dispatch(addCategories(getCategoryNames.categories));
     this.props.dispatch(addCurrencies(getCurrencies.currencies as any));
+    
+    */
+    this.props.dispatch(addCategories(Data.categories));
+    this.props.dispatch(addCurrencies(Data.currencies));
     this.setState(() => ({ loading: false }));
   };
   render() {
